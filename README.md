@@ -1,59 +1,213 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎛️ Laravel Counter App
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A beginner-friendly Laravel project built to understand the **MVC architecture**, **database operations**, **authentication**, and **role-based access control** — all through a simple counter application.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📖 About
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+This project was built as a learning exercise to understand how Laravel works end-to-end. It covers models, controllers, views, migrations, seeders, middleware, and authentication — using a counter app as the practical example.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+There are two roles:
 
-## Learning Laravel
+- **Admin** — logs in, creates student accounts, and views all counters across all students
+- **Student** — logs in, creates their own counters, and increments / decrements / resets / deletes them
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Every counter value is persisted in a MySQL database, so refreshing the page always shows the last saved value.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🚀 Features
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Role-based authentication (Admin / Student)
+- Admin can create student accounts with email and password
+- Admin dashboard shows all counters from all students
+- Student dashboard shows only their own counters
+- Create multiple counters per student
+- Increment, decrement, reset, and delete counters
+- All values saved to MySQL — persists across page refreshes
+- Middleware protection on all routes
+- Admin seeder for quick setup
+- Clean, minimal UI with no frontend framework
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🗂️ Project Structure
 
-## Contributing
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── AuthController.php       # Login, logout
+│   │   ├── AdminController.php      # Admin dashboard, create students
+│   │   └── CounterController.php    # Counter CRUD for students
+│   └── Middleware/
+│       ├── AdminMiddleware.php       # Blocks non-admins from /admin routes
+│       └── StudentMiddleware.php     # Blocks non-students from /student routes
+└── Models/
+    ├── User.php                      # Role helpers: isAdmin(), isStudent()
+    └── Counter.php                   # Belongs to a User
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+database/
+├── migrations/
+│   ├── create_users_table.php
+│   ├── add_role_to_users_table.php
+│   ├── create_counters_table.php
+│   └── add_user_id_to_counters_table.php
+└── seeders/
+    └── AdminSeeder.php               # Creates default admin account
 
-## Code of Conduct
+resources/views/
+├── auth/
+│   └── login.blade.php               # Shared login page (admin + student)
+├── admin/
+│   ├── dashboard.blade.php           # View all counters
+│   ├── students.blade.php            # List all students
+│   └── create-student.blade.php      # Create student + show credentials
+└── student/
+    └── dashboard.blade.php           # Counter grid with +/−/reset/delete
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+routes/
+└── web.php                           # All routes with middleware groups
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🛠️ Tech Stack
 
-## License
+| Layer      | Technology          |
+|------------|---------------------|
+| Framework  | Laravel 11          |
+| Language   | PHP 8.2+            |
+| Database   | MySQL               |
+| Frontend   | Blade templates, plain CSS |
+| Auth       | Laravel session auth (built-in) |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## ⚙️ Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/laravel-counter-app.git
+cd laravel-counter-app
+```
+
+### 2. Install dependencies
+
+```bash
+composer install
+```
+
+### 3. Set up environment
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Edit `.env` and set your database credentials:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=counter_app
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
+
+### 4. Create the database
+
+```sql
+CREATE DATABASE counter_app;
+```
+
+### 5. Run migrations
+
+```bash
+php artisan migrate
+```
+
+### 6. Seed the admin account
+
+```bash
+php artisan db:seed --class=AdminSeeder
+```
+
+### 7. Start the server
+
+```bash
+php artisan serve
+```
+
+Visit **http://127.0.0.1:8000**
+
+---
+
+## 🔑 Default Credentials
+
+| Role    | Email             | Password  |
+|---------|-------------------|-----------|
+| Admin   | admin@admin.com   | admin123  |
+| Student | created by admin  | set by admin |
+
+> **Note:** Change the admin password after first login in a production environment.
+
+---
+
+## 📌 Routes Overview
+
+| Method | URL | Description | Access |
+|--------|-----|-------------|--------|
+| GET | `/login` | Login page | Public |
+| POST | `/login` | Handle login | Public |
+| POST | `/logout` | Logout | Auth |
+| GET | `/admin/dashboard` | View all counters | Admin |
+| GET | `/admin/students` | List all students | Admin |
+| GET | `/admin/students/create` | Create student form | Admin |
+| POST | `/admin/students/create` | Store new student | Admin |
+| GET | `/student/dashboard` | Student counter grid | Student |
+| POST | `/student/counters` | Create new counter | Student |
+| POST | `/student/counters/{id}/increment` | Increment | Student |
+| POST | `/student/counters/{id}/decrement` | Decrement | Student |
+| POST | `/student/counters/{id}/reset` | Reset to zero | Student |
+| DELETE | `/student/counters/{id}` | Delete counter | Student |
+
+---
+
+## 🧠 What This Project Teaches
+
+- **MVC pattern** — how Models, Views, and Controllers work together
+- **Migrations** — version-controlling your database schema
+- **Seeders** — pre-populating the database with default data
+- **Eloquent ORM** — `hasMany`, `belongsTo`, `firstOrCreate`, `updateOrCreate`
+- **Middleware** — protecting routes based on user role
+- **Session-based authentication** — `Auth::attempt()`, `Auth::user()`, `Auth::logout()`
+- **Blade templating** — `@csrf`, `@method`, `@forelse`, `@error`, `{{ }}` syntax
+- **Route groups** — grouping routes by middleware and prefix
+- **Flash messages** — passing data between redirects via session
+
+---
+
+## 📸 Screenshots
+
+| Page | Description |
+|------|-------------|
+| `/login` | Shared login with role cards |
+| `/admin/dashboard` | Table of all student counters |
+| `/admin/students/create` | Create student + credential reveal |
+| `/student/dashboard` | Counter grid with +/−/reset/delete |
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## 🙌 Acknowledgements
+
+Built as a step-by-step learning project to understand Laravel fundamentals — from file structure to authentication and role-based access control.
