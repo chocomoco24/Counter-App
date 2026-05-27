@@ -2,43 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Counter;
+use Illuminate\Support\Facades\Auth;
+
 class CounterController extends Controller
 {
-    // Show the counter page
+    // Student dashboard: list all their counters
     public function index()
     {
-        // Get the first counter row, or create one with value 0
-        $counter = Counter::firstOrCreate(['id' => 1], ['value' => 0]);
-        return view('counter', ['counter' => $counter]);
+        $counters = Counter::where('user_id', Auth::id())->latest()->get();
+        return view('student.dashboard', compact('counters'));
+    }
+
+    // Create a new counter for this student
+    public function store()
+    {
+        Counter::create([
+            'user_id' => Auth::id(),
+            'value'   => 0,
+        ]);
+        return redirect('/student/dashboard')->with('success', 'Counter created!');
     }
 
     // Increment
-    public function increment()
+    public function increment($id)
     {
-        $counter = Counter::find(1);
-        $counter->value += 1;
-        $counter->save();
-        return redirect('/');
+        $counter = Counter::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $counter->increment('value');
+        return redirect('/student/dashboard');
     }
 
     // Decrement
-    public function decrement()
+    public function decrement($id)
     {
-        $counter = Counter::find(1);
-        $counter->value -= 1;
-        $counter->save();
-        return redirect('/');
+        $counter = Counter::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $counter->decrement('value');
+        return redirect('/student/dashboard');
     }
 
     // Reset
-    public function reset()
+    public function reset($id)
     {
-        $counter = Counter::find(1);
-        $counter->value = 0;
-        $counter->save();
-        return redirect('/');
+        $counter = Counter::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $counter->update(['value' => 0]);
+        return redirect('/student/dashboard');
+    }
+
+    // Delete
+    public function destroy($id)
+    {
+        Counter::where('id', $id)->where('user_id', Auth::id())->firstOrFail()->delete();
+        return redirect('/student/dashboard')->with('success', 'Counter deleted.');
     }
 }
